@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 78417f50b83dd9f47af4039693952b7d
+timeCreated: 1524693839
+licenseType: Store
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 8400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 217206
+  packageName: Video Player With Seek Controls
+  packageVersion: 1.0
+  assetPath: Assets/Srivatsan Lakshmanan/Texture/VideoRenderTexture.renderTexture
+  uploadId: 490763

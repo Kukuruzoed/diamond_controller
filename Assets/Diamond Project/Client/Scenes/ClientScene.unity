@@ -119,6 +119,72 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &1110311077
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1110311080}
+  - component: {fileID: 1110311079}
+  - component: {fileID: 1110311078}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1110311078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1110311077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 569ac386d5d77294d8529ba13109e79a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serverPort: 9000
+  scanTimeoutMs: 2000
+  retryIntervalSeconds: 1
+  maxRetries: 10
+--- !u!114 &1110311079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1110311077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 194106113d58cfa48adb80c826cad994, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scanner: {fileID: 1110311078}
+  port: 9000
+  OnCommandRecieved:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!4 &1110311080
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1110311077}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -950.1543, y: 2936.4934, z: -752.0202}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1191315129
 GameObject:
   m_ObjectHideFlags: 0
@@ -145,7 +211,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1191315129}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: 3997b71dd04490e4eb549c7e1a58ce6d, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: 7fff3f4bbb2049049bc07aa056f498cd, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
@@ -200,6 +266,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8eb4e18e85d85b74a85338095efaf8e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  videoPlayer: {fileID: 1191315130}
+  videoFileName: example_360.mp4
+  startVideo:
+    m_Name: Start Video
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 454447c9-4aa3-4a53-be89-6848b59ba77f
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
 --- !u!1 &1567338345
 GameObject:
   m_ObjectHideFlags: 0
@@ -343,3 +420,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 1567338348}
   - {fileID: 1191315131}
+  - {fileID: 1110311080}

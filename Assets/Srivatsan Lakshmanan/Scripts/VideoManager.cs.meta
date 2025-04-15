@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 51a7ee2cbd64a9143bd7e97e58fb421f
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 217206
+  packageName: Video Player With Seek Controls
+  packageVersion: 1.0
+  assetPath: Assets/Srivatsan Lakshmanan/Scripts/VideoManager.cs
+  uploadId: 490763

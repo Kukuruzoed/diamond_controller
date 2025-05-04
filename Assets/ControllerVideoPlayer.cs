@@ -1,4 +1,6 @@
 using System.Collections;
+using NUnit.Framework.Constraints;
+using RenderHeads.Media.AVProVideo;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -13,22 +15,42 @@ public class ControllerVideoPlayer : MonoBehaviour
     [SerializeField] private Button skipBackward;
     [SerializeField] private Button playButton;
     [SerializeField] private Button pauseButton;
+    [SerializeField] private float skipSeconds = 5;
 
     public UnityEvent<bool> OnVideoPaused = new UnityEvent<bool>();
     public UnityEvent<double> OnVideoSeek = new UnityEvent<double>();
 
-    private VideoPlayer player;
+    private MediaPlayer avVideoPlayer;
+    
     void Start()
     {
-        player = GetComponent<VideoPlayer>();
+        ConfigureAVVideoPlayer();
+    }
+
+    void ConfigureAVVideoPlayer()
+    {
+        avVideoPlayer = GetComponent<MediaPlayer>();
+
+        avVideoPlayer.Events.AddListener((MediaPlayer mp, MediaPlayerEvent.EventType eventType, ErrorCode errorCode) =>
+        {
+            switch (eventType)
+            {
+                case MediaPlayerEvent.EventType.Started:
+                    playButton.gameObject.SetActive(false);
+                    pauseButton.gameObject.SetActive(true);
+                    break;
+            }
+        });
+
         progressSlider.onValueChanged.AddListener((progress) =>
         {
-            player.time = progress * player.length;
+            avVideoPlayer.Control.SeekFast((progress * avVideoPlayer.Info.GetDurationMs()));
+            OnVideoSeek?.Invoke(avVideoPlayer.Control.GetCurrentTimeMs());
         });
 
         pauseButton.onClick.AddListener(() =>
         {
-            player.Pause();
+            avVideoPlayer.Control.Pause();
             OnVideoPaused?.Invoke(true);
             playButton.gameObject.SetActive(true);
             pauseButton.gameObject.SetActive(false);
@@ -36,7 +58,7 @@ public class ControllerVideoPlayer : MonoBehaviour
 
         playButton.onClick.AddListener(() =>
         {
-            player.Play(); 
+            avVideoPlayer.Control.Play();
             OnVideoPaused?.Invoke(false);
             playButton.gameObject.SetActive(false);
             pauseButton.gameObject.SetActive(true);
@@ -44,56 +66,54 @@ public class ControllerVideoPlayer : MonoBehaviour
 
         skipForward.onClick.AddListener(() =>
         {
-            if(player.time < player.length - 10)
-            {
-                player.time += 10;
-                player.Play();
-                OnVideoSeek?.Invoke(player.time);
-            }
+            float seekTime = Mathf.Clamp(avVideoPlayer.Control.GetCurrentTimeMs() + (skipSeconds * 1000), 0f, avVideoPlayer.Info.GetDurationMs());
+
+            Debug.Log($"[Controller] SeekTime: {seekTime}, current time: {avVideoPlayer.Control.GetCurrentTimeMs()}, duration: {avVideoPlayer.Info.GetDurationMs()}");
+
+            avVideoPlayer.Control.SeekFast(seekTime);
+            OnVideoSeek?.Invoke(avVideoPlayer.Control.GetCurrentTimeMs());
+            Debug.Log($"[Controller] Current time: {avVideoPlayer.Control.GetCurrentTimeMs()}");
         });
 
         skipBackward.onClick.AddListener(() =>
         {
-            if(player.time > 10)
-            {
-                player.time -= 10;
-                player.Play();
-                OnVideoSeek?.Invoke(player.time);
-            }
+            float seekTime = Mathf.Clamp(avVideoPlayer.Control.GetCurrentTimeMs() - (skipSeconds * 1000), 0f, avVideoPlayer.Info.GetDurationMs());
+            avVideoPlayer.Control.SeekFast(seekTime);
+            OnVideoSeek?.Invoke(avVideoPlayer.Control.GetCurrentTimeMs());
+            Debug.Log($"[Controller] SeekTime: {seekTime}");
         });
 
-        StartCoroutine(SeekCoroutine());
+        seekForward.OnHoldEnded.AddListener(() =>
+        {
+            avVideoPlayer.Control.SetPlaybackRate(1);
+            avVideoPlayer.Control.SeekFast(avVideoPlayer.Control.GetCurrentTimeMs());
+            OnVideoSeek?.Invoke(avVideoPlayer.Control.GetCurrentTimeMs());
+        });
+
+        seekBackward.OnHoldEnded.AddListener(() =>
+        {
+            avVideoPlayer.Control.SetPlaybackRate(1); 
+            avVideoPlayer.Control.SeekFast(avVideoPlayer.Control.GetCurrentTimeMs());
+            OnVideoSeek?.Invoke(avVideoPlayer.Control.GetCurrentTimeMs());
+        });
+
+        seekForward.OnHoldStarted.AddListener(() =>
+        {
+            avVideoPlayer.Control.SetPlaybackRate(3);
+        });
+
+        seekBackward.OnHoldStarted.AddListener(() =>
+        {
+            avVideoPlayer.Control.SetPlaybackRate(-3);
+        });
     }
 
     private void Update()
     {
-        progressSlider.SetValueWithoutNotify((float)(player.time / player.length));
-    }
-
-    private IEnumerator SeekCoroutine()
-    {
-        while (true)
+        if (avVideoPlayer.Info.GetDurationMs() > 0)
         {
-            if (seekForward.isDown)
-            {
-                player.time += 50 * Time.deltaTime;
-                yield return new WaitForEndOfFrame();
-                OnVideoSeek?.Invoke(player.time);
-                player.Play();
-                Debug.Log($"{player.time}, {Time.deltaTime}");
-            }
-
-            if (seekBackward.isDown)
-            {
-                player.time -= 50 * Time.deltaTime;
-                yield return new WaitForEndOfFrame();
-                OnVideoSeek?.Invoke(player.time);
-                player.Play();
-                Debug.Log($"{player.time}, {Time.deltaTime}");
-            }
-
-            yield return new WaitForEndOfFrame();
+            float progressValue = (float)(avVideoPlayer.Control.GetCurrentTimeMs() / avVideoPlayer.Info.GetDurationMs());
+            progressSlider.SetValueWithoutNotify(progressValue);
         }
     }
-
 }
